@@ -17,7 +17,7 @@
 #### SMTP配置文件
 存放于smtp-config文件夹中，所有字段必填，**必须为json文件**  
 **QQ_SMTP.json**
-```json
+```json5
 {
     "host": "smtp.qq.com",  // smtp服务器
     "user": "abc@qq.com",  // 发送者邮箱名称
@@ -45,7 +45,7 @@
 #### mail发送邮件格式
 **必须为json文件**  
 **普通文本邮件**  
-```json
+```json5
 {
     "subject": "邮件主题",
     "msg": "邮件文本内容",
@@ -55,7 +55,7 @@
 ```
   
 **模板邮件**  
-```json
+```json5
 {
     "subject": "邮件主题",
     "msg": "邮件文本内容",
