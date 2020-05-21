@@ -1,10 +1,11 @@
 import os
 import json
 
+from parser import template_paerser
 from utils.path_utils import path_utils
 
 
-NEED_FIELDS = ['subject', 'msg', 'smtp', 'receivers']
+NEED_FIELDS = ['subject', 'smtp', 'receivers']
 
 
 # 通过邮件的绝对路径解析邮件，除了检查所需字段外
@@ -24,6 +25,18 @@ def parse(mail_paths):
 
             if not all(field in mail for field in NEED_FIELDS):
                 raise RuntimeError("邮件{} 的缺少所需要的字段".format(mail_path))
+
+            # msg 或者 template需要存在至少一个
+            if not ('msg' in mail or all(field in mail for field in ['template', 'texts', 'imgs'])):
+                raise RuntimeError("邮件{} 的缺少所需要的字段".format(mail_path))
+
+            # 解析模板文件
+            if 'template' in mail:
+                mail['template_html'] = template_paerser.inject(
+                    "{}/{}.html".format(path_utils.template_folder_path, mail['template']),
+                    mail['texts'],
+                    mail['imgs']
+                )
 
             mail['filename'] = mail_path[mail_path.rfind("/") + 1:]
             mail['path'] = mail_path

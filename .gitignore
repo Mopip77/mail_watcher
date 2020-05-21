@@ -200,3 +200,4 @@ dmypy.json
 
 # MY SETTINGS
 data/**/*.json
+data/mail.log

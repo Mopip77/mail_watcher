@@ -1,14 +1,14 @@
-from email.header import Header
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from utils import time_utils, mail_file_utils
+from email.mime import base as MIMEBase
+from utils import time_utils, mail_file_utils, img_utils
 
 import smtplib
 
 
 # 批量发送邮件，并且这些邮件必须是使用同一个SMTP配置
-def send_mails(mails, smtp_config, text_format='plain', print_success=False):
+def send_mails(mails, smtp_config, print_success=False):
     if len(mails) == 0:
         return
 
@@ -26,7 +26,7 @@ def send_mails(mails, smtp_config, text_format='plain', print_success=False):
         sender = smtp_config['user']
         receivers = mail['receivers']
 
-        message = MIMEText(mail['msg'], text_format, 'utf-8')
+        message = __get_message(mail)
         message['From'] = "{}".format(sender)
         message['To'] = ",".join(receivers)
         message['Subject'] = mail['subject']
@@ -43,3 +43,22 @@ def send_mails(mails, smtp_config, text_format='plain', print_success=False):
     mail_file_utils.move_sent_mails(mails)
 
     smtp_obj.quit()
+
+
+def __get_message(mail) -> MIMEBase:
+    if 'template' in mail:
+        msg_root = MIMEMultipart('related')
+        msg_alternative = MIMEMultipart('alternative')
+        msg_root.attach(msg_alternative)
+        msg_alternative.attach(MIMEText(mail['template_html'], 'html', 'utf-8'))
+
+        i = 0
+        for img in img_utils.get_image_contents(mail['imgs']):
+            mime_img = MIMEImage(img)
+            mime_img.add_header('Content-ID', '<image{}>'.format(i))
+            i += 1
+            msg_root.attach(mime_img)
+
+        return msg_root
+    else:
+        return MIMEText(mail['msg'], 'plain', 'utf-8')
