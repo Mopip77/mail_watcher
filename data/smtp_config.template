@@ -1,0 +1,9 @@
+{
+    "host": "smtp.qq.com",  # smtp服务器
+    "user": "abc@qq.com",  # 发送者邮箱名称
+    "pwd": "xxxxxxxxx",   # 发送者smtp服务密码
+    "port": 465,         # smtp ssl端口，不支持25端口
+    "sender": "自定义发送者名称"
+}
+
+# 每个配置文件以json的格式存放在smtp-config文件夹中

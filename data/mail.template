@@ -1,0 +1,8 @@
+{
+    "subject": "主题",
+    "msg": "内容主体",
+    "smtp": "SMTP配置文件名,不需json后缀",
+    "receivers": [],   # 发送目标邮箱数组
+}
+
+# 每个邮件文件以json的格式存放在mail文件夹中
